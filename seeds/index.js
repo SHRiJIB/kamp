@@ -1,9 +1,10 @@
 const mongoose = require('mongoose')
 const Campground = require('../models/campground.js')
+const dotenv = require('dotenv')
 const cities = require('./cities.js')
 const { descriptors, places } = require('./seedHelpers.js')
-
-mongoose.connect('mongodb://localhost:27017/Scamp', {
+dotenv.config()
+mongoose.connect(process.env.CONNECTION_URL, {
   useUnifiedTopology: true,
   useNewUrlParser: true,
   useCreateIndex: true,

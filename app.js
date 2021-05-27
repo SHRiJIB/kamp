@@ -3,13 +3,17 @@ const mongoose = require('mongoose')
 const methodOverride = require('method-override')
 const ejsMate = require('ejs-mate')
 const path = require('path')
+const dotenv = require('dotenv')
 const app = express()
 const Campground = require('./models/campground.js')
 const catchAsync = require('./utils/catchAsyncError.js')
 const ExpressError = require('./utils/ExpressError.js')
-const { campgroundSchema } = require('./schemas.js')
+const { campgroundSchema, reviewSchema } = require('./schemas.js')
+const Review = require('./models/review.js')
 
-mongoose.connect('mongodb://localhost:27017/Scamp', {
+dotenv.config()
+const PORT = process.env.PORT || 3000
+mongoose.connect(process.env.CONNECTION_URL, {
   useUnifiedTopology: true,
   useNewUrlParser: true,
   useCreateIndex: true,
@@ -29,8 +33,18 @@ app.engine('ejs', ejsMate)
 app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, 'views'))
 
-const validateSchema = (req, res, next) => {
+const validateCampground = (req, res, next) => {
   const { error } = campgroundSchema.validate(req.body)
+  if (error) {
+    const msg = error.details.map((ob) => ob.message).join(',')
+    throw new ExpressError(msg, 400)
+  } else {
+    next()
+  }
+}
+
+const validateReview = (req, res, next) => {
+  const { error } = reviewSchema.validate(req.body)
   if (error) {
     const msg = error.details.map((ob) => ob.message).join(',')
     throw new ExpressError(msg, 400)
@@ -60,7 +74,7 @@ app.get('/campgrounds/new', (req, res) => {
 //add new campground
 app.post(
   '/campgrounds',
-  validateSchema,
+  validateCampground,
   catchAsync(async (req, res) => {
     const campground = new Campground(req.body.campground)
     await campground.save()
@@ -73,8 +87,33 @@ app.get(
   '/campgrounds/:id',
   catchAsync(async (req, res) => {
     const { id } = req.params
-    const camp = await Campground.findById(id)
+    const camp = await Campground.findById(id).populate('reviews')
     res.render('campgrounds/show', { camp })
+  })
+)
+
+// add reviews to a campground
+app.post(
+  '/campgrounds/:id/reviews',
+  validateReview,
+  catchAsync(async (req, res) => {
+    const campground = await Campground.findById(req.params.id)
+    const review = new Review(req.body.review)
+    campground.reviews.push(review)
+    await review.save()
+    await campground.save()
+    res.redirect(`/campgrounds/${campground._id}`)
+  })
+)
+
+//delete reviews
+app.delete(
+  '/campgrounds/:id/reviews/:reviewId',
+  catchAsync(async (req, res) => {
+    const { id, reviewId } = req.params
+    await Campground.findByIdAndUpdate(id, { $pull: { reviews: reviewId } })
+    await Review.findByIdAndDelete(reviewId)
+    res.redirect(`/campgrounds/${id}`)
   })
 )
 
@@ -91,7 +130,7 @@ app.get(
 //update campground
 app.put(
   '/campgrounds/:id',
-  validateSchema,
+  validateCampground,
   catchAsync(async (req, res) => {
     const { id } = req.params
     const { campground } = req.body
@@ -122,6 +161,6 @@ app.use((err, req, res, next) => {
   res.status(statusCode).render('error', { err })
 })
 
-app.listen(3000, () => {
-  console.log('SERVER IS RUNNIG ON PORT 3000')
+app.listen(PORT, () => {
+  console.log(`SERVER IS RUNNIG ON PORT ${PORT}`)
 })
