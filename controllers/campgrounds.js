@@ -6,7 +6,12 @@ const getAllCamps = async (req, res) => {
 const getCampById = async (req, res) => {
   const { id } = req.params
   const camp = await Campground.findById(id)
-    .populate('reviews')
+    .populate({
+      path: 'reviews',
+      populate: {
+        path: 'author',
+      },
+    })
     .populate('author')
   if (!camp) {
     req.flash('error', 'Cannot find the campground.')

@@ -8,10 +8,13 @@ const {
 } = require('../controllers/campgrounds.js')
 const express = require('express')
 const router = express.Router()
-const { validateCampground } = require('../middleware/campgroundMw.js')
+const {
+  validateCampground,
+  isAuthor,
+} = require('../middleware/campgroundMw.js')
 
 const catchAsync = require('../utils/catchAsyncError.js')
-const { isAuthor, isLoggedIn } = require('../middleware/authMw.js')
+const { isLoggedIn } = require('../middleware/authMw.js')
 
 //all campgrounds route
 router.get('/', catchAsync(getAllCamps))
