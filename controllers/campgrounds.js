@@ -1,12 +1,13 @@
 const Campground = require('../models/campground.js')
-
 const getAllCamps = async (req, res) => {
   const campgrounds = await Campground.find({})
   res.render('campgrounds/index', { campgrounds })
 }
 const getCampById = async (req, res) => {
   const { id } = req.params
-  const camp = await Campground.findById(id).populate('reviews')
+  const camp = await Campground.findById(id)
+    .populate('reviews')
+    .populate('author')
   if (!camp) {
     req.flash('error', 'Cannot find the campground.')
     return res.redirect('/campgrounds')
@@ -15,6 +16,7 @@ const getCampById = async (req, res) => {
 }
 const addNewCamp = async (req, res) => {
   const campground = new Campground(req.body.campground)
+  campground.author = req.user._id
   await campground.save()
   req.flash('success', 'Successfully made a new campground!')
   res.redirect(`/campgrounds/${campground._id}`)
