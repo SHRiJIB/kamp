@@ -21,6 +21,7 @@ const titleGenerator = (array) => {
   return array[randInd]
 }
 
+//60b771403c217b4a08a84ebf
 const seedDB = async () => {
   await Campground.deleteMany({})
 
@@ -28,6 +29,7 @@ const seedDB = async () => {
     const random1000 = Math.floor(Math.random() * 1000)
     const randPrice = Math.floor(Math.random() * 20) + 10
     const camp = new Campground({
+      author: '60b771403c217b4a08a84ebf',
       location: `${cities[random1000].city},${cities[random1000].state}`,
       image: 'https://source.unsplash.com/random',
       title: `${titleGenerator(descriptors)} ${titleGenerator(places)}`,
