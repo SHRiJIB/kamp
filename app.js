@@ -10,6 +10,10 @@ const app = express()
 const ExpressError = require('./utils/ExpressError.js')
 const campgroundRouter = require('./routes/campgrounds.js')
 const reviewRouter = require('./routes/reviews.js')
+const authRouter = require('./routes/auth.js')
+const passport = require('passport')
+const LocalStrategy = require('passport-local')
+const User = require('./models/user.js')
 
 dotenv.config()
 const PORT = process.env.PORT || 3000
@@ -55,8 +59,18 @@ app.use(session(sessionConfig))
 //flash
 app.use(flash())
 
+//passport config
+app.use(passport.initialize())
+app.use(passport.session())
+passport.use(new LocalStrategy(User.authenticate()))
+
+passport.serializeUser(User.serializeUser())
+passport.deserializeUser(User.deserializeUser())
+
 //flash middleware
 app.use((req, res, next) => {
+  // console.log(req.session)
+  res.locals.currentUser = req.user
   res.locals.success = req.flash('success')
   res.locals.error = req.flash('error')
   next()
@@ -67,6 +81,9 @@ app.use((req, res, next) => {
 app.get('/', (req, res) => {
   res.render('home')
 })
+
+//router
+app.use('/auth', authRouter)
 app.use('/campgrounds', campgroundRouter)
 app.use('/campgrounds/:id/reviews', reviewRouter)
 
