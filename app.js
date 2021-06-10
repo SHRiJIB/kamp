@@ -6,6 +6,7 @@ const session = require('express-session')
 const flash = require('connect-flash')
 const path = require('path')
 const dotenv = require('dotenv')
+
 const app = express()
 const ExpressError = require('./utils/ExpressError.js')
 const campgroundRouter = require('./routes/campgrounds.js')
