@@ -8,6 +8,9 @@ const {
 } = require('../controllers/campgrounds.js')
 const express = require('express')
 const router = express.Router()
+const multer = require('multer')
+const { CloudStorage } = require('../cloudinary/index.js')
+const upload = multer({ storage: CloudStorage })
 const {
   validateCampground,
   isAuthor,
@@ -27,7 +30,13 @@ router.get('/new', isLoggedIn, (req, res) => {
 router.get('/:id', catchAsync(getCampById))
 
 //add new campground
-router.post('/', isLoggedIn, validateCampground, catchAsync(addNewCamp))
+router.post(
+  '/',
+  isLoggedIn,
+  upload.array('image'),
+  validateCampground,
+  catchAsync(addNewCamp)
+)
 
 //edit page route
 router.get('/:id/edit', isLoggedIn, isAuthor, catchAsync(editCampground))
@@ -37,6 +46,7 @@ router.put(
   '/:id',
   isLoggedIn,
   isAuthor,
+  upload.array('image'),
   validateCampground,
   catchAsync(updateCamp)
 )
