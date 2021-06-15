@@ -1,3 +1,6 @@
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
 const express = require('express')
 const mongoose = require('mongoose')
 const methodOverride = require('method-override')
@@ -5,8 +8,6 @@ const ejsMate = require('ejs-mate')
 const session = require('express-session')
 const flash = require('connect-flash')
 const path = require('path')
-const dotenv = require('dotenv')
-
 const app = express()
 const ExpressError = require('./utils/ExpressError.js')
 const campgroundRouter = require('./routes/campgrounds.js')
@@ -15,8 +16,8 @@ const authRouter = require('./routes/auth.js')
 const passport = require('passport')
 const LocalStrategy = require('passport-local')
 const User = require('./models/user.js')
-
-dotenv.config()
+const mongoSanitize = require('express-mongo-sanitize')
+const helmet = require('helmet')
 const PORT = process.env.PORT || 3000
 mongoose.connect(process.env.CONNECTION_URL, {
   useUnifiedTopology: true,
@@ -33,7 +34,55 @@ db.once('open', () => {
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+app.use(mongoSanitize())
 app.use(methodOverride('_method'))
+
+//helmet
+app.use(helmet())
+const scriptSrcUrls = [
+  'https://stackpath.bootstrapcdn.com',
+  'https://api.tiles.mapbox.com',
+  'https://api.mapbox.com',
+  'https://kit.fontawesome.com',
+  'https://cdnjs.cloudflare.com',
+  'https://cdn.jsdelivr.net',
+]
+const styleSrcUrls = [
+  'https://kit-free.fontawesome.com',
+  'https://stackpath.bootstrapcdn.com',
+  'https://api.mapbox.com',
+  'https://api.tiles.mapbox.com',
+  'https://fonts.googleapis.com',
+  'https://use.fontawesome.com',
+  'https://cdn.jsdelivr.net',
+]
+const connectSrcUrls = [
+  'https://api.mapbox.com',
+  'https://*.tiles.mapbox.com',
+  'https://events.mapbox.com',
+]
+const fontSrcUrls = ['https://fonts.gstatic.com']
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: [],
+      connectSrc: ["'self'", ...connectSrcUrls],
+      scriptSrc: ["'unsafe-inline'", "'self'", ...scriptSrcUrls],
+      styleSrc: ["'self'", "'unsafe-inline'", ...styleSrcUrls],
+      workerSrc: ["'self'", 'blob:'],
+      childSrc: ['blob:'],
+      objectSrc: [],
+      imgSrc: [
+        "'self'",
+        'blob:',
+        'data:',
+        `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/`, //SHOULD MATCH YOUR CLOUDINARY ACCOUNT!
+        'https://images.unsplash.com',
+      ],
+      fontSrc: ["'self'", ...fontSrcUrls],
+    },
+  })
+)
 
 //ejs set up
 app.engine('ejs', ejsMate)
@@ -45,11 +94,13 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 //session config
 const sessionConfig = {
+  name: 'session',
   secret: process.env.SECRET,
   resave: false,
   saveUninitialized: true,
   cookie: {
     httpOnly: true,
+    // secure:true,
     expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
     maxAge: 1000 * 60 * 60 * 24 * 7,
   },
@@ -70,7 +121,6 @@ passport.deserializeUser(User.deserializeUser())
 
 //flash middleware
 app.use((req, res, next) => {
-  // console.log(req.session)
   res.locals.currentUser = req.user
   res.locals.success = req.flash('success')
   res.locals.error = req.flash('error')
