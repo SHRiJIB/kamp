@@ -18,6 +18,7 @@ const LocalStrategy = require('passport-local')
 const User = require('./models/user.js')
 const mongoSanitize = require('express-mongo-sanitize')
 const helmet = require('helmet')
+const MongoDBStore = require('connect-mongo')
 const PORT = process.env.PORT || 3000
 mongoose.connect(process.env.CONNECTION_URL, {
   useUnifiedTopology: true,
@@ -61,7 +62,7 @@ const connectSrcUrls = [
   'https://*.tiles.mapbox.com',
   'https://events.mapbox.com',
 ]
-const fontSrcUrls = ['https://fonts.gstatic.com']
+const fontSrcUrls = ['https://fonts.gstatic.com', 'https://cdn.jsdelivr.net']
 app.use(
   helmet.contentSecurityPolicy({
     directives: {
@@ -92,8 +93,19 @@ app.set('views', path.join(__dirname, 'views'))
 //to serve static files in public folder
 app.use(express.static(path.join(__dirname, 'public')))
 
+//session store
+const store = new MongoDBStore({
+  mongoUrl: process.env.CONNECTION_URL,
+  secret: process.env.SECRET,
+  touchAfter: 24 * 60 * 60,
+})
+
+store.on('error', function (e) {
+  console.log(e)
+})
 //session config
 const sessionConfig = {
+  store,
   name: 'session',
   secret: process.env.SECRET,
   resave: false,

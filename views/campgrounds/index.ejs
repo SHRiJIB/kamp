@@ -1,10 +1,8 @@
 <% layout("layouts/boilerplate") %>
+<link rel="stylesheet" href="/styles/index.css" />
 <div id="map" class="cluster-map"></div>
 
-<h1>All campgrounds</h1>
-<a class="btn btn-warning mb-3" href="/campgrounds/new">Add New</a>
-
-<% for(let camp of campgrounds) {%>
+<!-- <% for(let camp of campgrounds) {%>
 <div class="card mb-2">
   <div class="row">
     <div class="col-md-4">
@@ -38,7 +36,45 @@
     </div>
   </div>
 </div>
-<% } %>
+<% } %> -->
+
+<!-- <div class="card" style="width: 18rem;">
+  <img src="..." class="card-img-top" alt="...">
+  <div class="card-body">
+    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+  </div>
+</div> -->
+<div class="">
+  <h1>All campgrounds</h1>
+  <a class="btn btn-warning mb-3" href="/campgrounds/new">Add New</a>
+  <div class="row offset-md-1 offset-lg-2 offset-sm-2">
+    <% for(let camp of campgrounds.slice(0,12)) {%>
+    <div class="m-lg-4 col-lg-3 m-md-3 col-md-5 col-sm-8">
+      <% if(camp.images.length){ %>
+      <img src="<%= camp.images[0].url %>" alt="campground image" class="" />
+      <% } else { %>
+      <img
+        src="https://phillipbrande.files.wordpress.com/2013/10/random-pic-14.jpg"
+        alt="campground image"
+        class=""
+      />
+      <% } %>
+
+      <div class="card-body">
+        <h5 class="card-title"><%= camp.title %></h5>
+        <!-- <p class="card-text"><%= camp.description %></p> -->
+        <p class="card-text">
+          <small class="text-muted"><%= camp.location %> </small>
+        </p>
+
+        <a href="/campgrounds/<%= camp._id %> " class="btn btn-primary"
+          >View
+        </a>
+      </div>
+    </div>
+    <% } %>
+  </div>
+</div>
 <script>
   const mapBoxToken = '<%- process.env.MAPBOX %>'
   const campgrounds = {features: <%- JSON.stringify(campgrounds) %>}

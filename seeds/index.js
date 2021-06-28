@@ -43,12 +43,12 @@ const seedDB = async () => {
       },
       images: [
         {
-          url: 'https://res.cloudinary.com/duyd9br4i/image/upload/v1623000873/Scamp/tezcovrltrwxtqpd5hs8.jpg',
+          url: 'https://res.cloudinary.com/duyd9br4i/image/upload/v1622999889/Scamp/rzwuaendahyn6n9rmzjz.jpg',
           filename: 'Scamp/tezcovrltrwxtqpd5hs8',
         },
         {
           url: 'https://res.cloudinary.com/duyd9br4i/image/upload/v1623000876/Scamp/iwppuhwhv5wc54hfz14n.jpg',
-          filename: 'Scamp/iwppuhwhv5wc54hfz14n',
+          filename: 'Scamp/rzwuaendahyn6n9rmzjz',
         },
       ],
       title: `${titleGenerator(descriptors)} ${titleGenerator(places)}`,
