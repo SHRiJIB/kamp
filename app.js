@@ -1,6 +1,4 @@
-if (process.env.NODE_ENV !== 'production') {
-  require('dotenv').config()
-}
+require('dotenv').config()
 const express = require('express')
 const mongoose = require('mongoose')
 const methodOverride = require('method-override')
@@ -61,6 +59,8 @@ const connectSrcUrls = [
   'https://api.mapbox.com',
   'https://*.tiles.mapbox.com',
   'https://events.mapbox.com',
+  'https://source.unsplash.com',
+  'https://images.unsplash.com',
 ]
 const fontSrcUrls = ['https://fonts.gstatic.com', 'https://cdn.jsdelivr.net']
 app.use(
@@ -79,6 +79,7 @@ app.use(
         'data:',
         `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/`, //SHOULD MATCH YOUR CLOUDINARY ACCOUNT!
         'https://images.unsplash.com',
+        'https://source.unsplash.com',
       ],
       fontSrc: ["'self'", ...fontSrcUrls],
     },
@@ -112,7 +113,7 @@ const sessionConfig = {
   saveUninitialized: true,
   cookie: {
     httpOnly: true,
-    // secure:true,
+    // secure: true,
     expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
     maxAge: 1000 * 60 * 60 * 24 * 7,
   },
@@ -159,6 +160,7 @@ app.use((err, req, res, next) => {
   if (!err.message) {
     err.message = 'Something Went Wrong'
   }
+
   res.status(statusCode).render('error', { err })
 })
 

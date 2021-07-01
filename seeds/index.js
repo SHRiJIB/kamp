@@ -27,7 +27,7 @@ const mbxToken = process.env.MAPBOX
 const seedDB = async () => {
   await Campground.deleteMany({})
 
-  for (let i = 0; i < 300; i++) {
+  for (let i = 0; i < 100; i++) {
     const random1000 = Math.floor(Math.random() * 1000)
     const randPrice = Math.floor(Math.random() * 20) + 10
 
