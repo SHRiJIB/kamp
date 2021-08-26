@@ -3,6 +3,10 @@ const Campground = require('../models/campground.js')
 const dotenv = require('dotenv')
 const cities = require('./cities.js')
 const { descriptors, places } = require('./seedHelpers.js')
+const multer = require('multer')
+const { CloudStorage } = require('../cloudinary/index.js')
+const upload = multer({ storage: CloudStorage })
+
 dotenv.config()
 mongoose.connect(process.env.CONNECTION_URL, {
   useUnifiedTopology: true,

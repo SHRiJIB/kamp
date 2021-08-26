@@ -3,9 +3,6 @@
 
 <div class="container">
   <div class="row mt-3">
-    <div class="col-12">
-      <div id="map" class="map"></div>
-    </div>
     <div class="col-md-6 col-12">
       <div id="campgroundCarousel" class="carousel slide" data-ride="carousel">
         <div class="carousel-inner">
@@ -82,8 +79,11 @@
       </div>
     </div>
     <div class="col-md-6 col-12">
+      <div class="col-12">
+        <div id="map" class="map"></div>
+      </div>
       <% if(currentUser) { %>
-      <h2 class="display-3 mb-3">Leave a review</h2>
+      <h2 class="mb-3">Leave a review</h2>
       <form
         action="/campgrounds/<%= camp._id %>/reviews"
         method="POST"

@@ -11,7 +11,7 @@ cloudinary.config({
 const CloudStorage = new CloudinaryStorage({
   cloudinary,
   params: {
-    folder: 'Scamp',
+    folder: 'kamp',
     allowedFormats: ['jpeg', 'png', 'jpg'],
   },
 })
