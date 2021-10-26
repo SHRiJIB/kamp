@@ -9,6 +9,7 @@ const getAllCamps = async (req, res) => {
   const campgrounds = await Campground.find({})
   res.render('campgrounds/index', { campgrounds })
 }
+
 const getCampById = async (req, res) => {
   const { id } = req.params
   const camp = await Campground.findById(id)
@@ -25,6 +26,7 @@ const getCampById = async (req, res) => {
   }
   res.render('campgrounds/show', { camp })
 }
+
 const addNewCamp = async (req, res) => {
   const geoData = await geoCoder
     .forwardGeocode({

@@ -18,6 +18,13 @@ const mongoSanitize = require('express-mongo-sanitize')
 const helmet = require('helmet')
 const MongoDBStore = require('connect-mongo')
 const PORT = process.env.PORT || 3000
+const {
+  connectSrcUrls,
+  fontSrcUrls,
+  scriptSrcUrls,
+  styleSrcUrls,
+} = require('./allowedSources')
+
 mongoose.connect(process.env.CONNECTION_URL, {
   useUnifiedTopology: true,
   useNewUrlParser: true,
@@ -38,31 +45,6 @@ app.use(methodOverride('_method'))
 
 //helmet
 app.use(helmet())
-const scriptSrcUrls = [
-  'https://stackpath.bootstrapcdn.com',
-  'https://api.tiles.mapbox.com',
-  'https://api.mapbox.com',
-  'https://kit.fontawesome.com',
-  'https://cdnjs.cloudflare.com',
-  'https://cdn.jsdelivr.net',
-]
-const styleSrcUrls = [
-  'https://kit-free.fontawesome.com',
-  'https://stackpath.bootstrapcdn.com',
-  'https://api.mapbox.com',
-  'https://api.tiles.mapbox.com',
-  'https://fonts.googleapis.com',
-  'https://use.fontawesome.com',
-  'https://cdn.jsdelivr.net',
-]
-const connectSrcUrls = [
-  'https://api.mapbox.com',
-  'https://*.tiles.mapbox.com',
-  'https://events.mapbox.com',
-  'https://source.unsplash.com',
-  'https://images.unsplash.com',
-]
-const fontSrcUrls = ['https://fonts.gstatic.com', 'https://cdn.jsdelivr.net']
 app.use(
   helmet.contentSecurityPolicy({
     directives: {

@@ -1,4 +1,4 @@
-const { campgroundSchema } = require('../schemas.js')
+const { campgroundSchema } = require('../validation-schemas.js')
 const ExpressError = require('../utils/ExpressError.js')
 const Campground = require('../models/campground.js')
 

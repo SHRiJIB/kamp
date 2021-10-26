@@ -1,4 +1,4 @@
-const { reviewSchema } = require('../schemas.js')
+const { reviewSchema } = require('../validation-schemas.js')
 const Review = require('../models/review.js')
 const ExpressError = require('../utils/ExpressError.js')
 module.exports.validateReview = (req, res, next) => {
