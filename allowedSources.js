@@ -6,6 +6,12 @@ module.exports.scriptSrcUrls = [
   'https://cdnjs.cloudflare.com',
   'https://cdn.jsdelivr.net',
 ]
+
+module.exports.imageSrcUrls = [
+  `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/`,
+  'https://images.unsplash.com',
+  'https://source.unsplash.com',
+]
 module.exports.styleSrcUrls = [
   'https://kit-free.fontawesome.com',
   'https://stackpath.bootstrapcdn.com',

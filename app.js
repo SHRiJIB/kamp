@@ -23,6 +23,7 @@ const {
   fontSrcUrls,
   scriptSrcUrls,
   styleSrcUrls,
+  imageSrcUrls,
 } = require('./allowedSources')
 
 mongoose.connect(process.env.CONNECTION_URL, {
@@ -55,14 +56,7 @@ app.use(
       workerSrc: ["'self'", 'blob:'],
       childSrc: ['blob:'],
       objectSrc: [],
-      imgSrc: [
-        "'self'",
-        'blob:',
-        'data:',
-        `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/`, //SHOULD MATCH YOUR CLOUDINARY ACCOUNT!
-        'https://images.unsplash.com',
-        'https://source.unsplash.com',
-      ],
+      imgSrc: ["'self'", 'blob:', 'data:', ...imageSrcUrls],
       fontSrc: ["'self'", ...fontSrcUrls],
     },
   })
