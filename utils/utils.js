@@ -5,7 +5,7 @@ const {
   scriptSrcUrls,
   styleSrcUrls,
   imageSrcUrls,
-} = require('./allowedSources')
+} = require('../allowedSources')
 
 const mongoose = require('mongoose')
 
@@ -31,7 +31,7 @@ module.exports.consoleStoreError = (e) => {
   console.log(e)
 }
 
-module.exports.getSessionConfig = (secret) => ({
+module.exports.getSessionConfig = (secret, store) => ({
   store,
   name: 'session',
   secret,

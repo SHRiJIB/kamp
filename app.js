@@ -51,7 +51,7 @@ const store = createMongoDBStore(process.env.CONNECTION_URL, process.env.SECRET)
 
 store.on('error', consoleStoreError)
 //session config
-const sessionConfig = getSessionConfig(process.env.SECRET)
+const sessionConfig = getSessionConfig(process.env.SECRET, store)
 
 app.use(session(sessionConfig))
 
